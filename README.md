@@ -1,5 +1,7 @@
 # Accounts
 
+[![Current master build status](https://travis-ci.org/blamewarrior/accounts.svg?branch=master)](https://travis-ci.org/blamewarrior/accounts)
+
 Installation
 ------------
 
