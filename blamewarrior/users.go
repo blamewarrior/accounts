@@ -20,18 +20,45 @@
 package blamewarrior
 
 import (
-	// "database/sql"
-	// "fmt"
-
+	"database/sql"
 	_ "github.com/lib/pq"
 )
 
-type Account struct {
+type User struct {
 	ID        int    `json:"-"`
 	Token     string `json:"token"`
 	UID       string `json:"uid"`
 	Nickname  string `json:"nickname"`
-	Name      string `json:"name"`
 	AvatarURL string `json:"avatar_url"`
-	Rating    Rating
+	Name      string `json:"name"`
 }
+
+func (u User) Valid() *Validator {
+	v := new(Validator)
+
+	v.MustNotBeEmpty(u.Token, "token must not be empty")
+	v.MustNotBeEmpty(u.UID, "uid must not be empty")
+	v.MustNotBeEmpty(u.Nickname, "nickname must not be empty")
+	v.MustNotBeEmpty(u.AvatarURL, "avatar_url must not be empty")
+	v.MustNotBeEmpty(u.Name, "name must not be empty")
+
+	return v
+}
+
+func SaveUser(db *sql.DB, u *User) (err error) {
+	return db.QueryRow(
+		SaveUserQuery,
+		u.Token,
+		u.UID,
+		u.Nickname,
+		u.AvatarURL,
+		u.Name,
+	).Scan(&u.ID)
+}
+
+const (
+	SaveUserQuery = `INSERT INTO users(token, uid, nickname, avatar_url, name) VALUES ($1, $2, $3, $4, $5)
+                        ON CONFLICT (nickname)
+                        SET token = EXCLUDED.token, name = EXCLUDED.name, avatar_url = EXCLUDED.avatar_url
+                        RETURNING id`
+)

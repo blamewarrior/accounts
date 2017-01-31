@@ -1,13 +1,11 @@
-CREATE TABLE accounts (
+CREATE TABLE users (
   id        SERIAL primary key,
-  token     VARCHAR,
-  uid       VARCHAR,
-  nickname  VARCHAR,
-  name      VARCHAR,
-  avatar_url VARCHAR,
-  rating    jsonb DEFAULT '{}'
+  token     VARCHAR NOT NULL,
+  uid       VARCHAR NOT NULL,
+  nickname  VARCHAR NOT NULL,
+  avatar_url VARCHAR NOT NULL,
+
+  name      VARCHAR
 );
 
-CREATE INDEX accounts_rating_idx ON accounts USING GIN (rating);
-
-CREATE UNIQUE INDEX accounts_nickname ON accounts (nickname);
+CREATE UNIQUE INDEX accounts_nickname ON users (nickname);

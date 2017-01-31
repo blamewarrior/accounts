@@ -1,5 +1,5 @@
 /*
-   Copyright (C) 2016 The BlameWarrior Authors.
+   Copyright (C) 2017 The BlameWarrior Authors.
 
    This file is a part of BlameWarrior service.
 
@@ -22,7 +22,7 @@ package blamewarrior_test
 import (
 	"testing"
 
-	"github.com/blamewarrior/accounts/blamewarrior"
+	"github.com/blamewarrior/users/blamewarrior"
 	"github.com/stretchr/testify/assert"
 )
 
