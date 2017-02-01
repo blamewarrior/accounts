@@ -20,8 +20,7 @@
 package blamewarrior
 
 import (
-	"database/sql"
-	_ "github.com/lib/pq"
+// 	_ "github.com/lib/pq"
 )
 
 type User struct {
@@ -45,8 +44,8 @@ func (u User) Valid() *Validator {
 	return v
 }
 
-func SaveUser(db *sql.DB, u *User) (err error) {
-	return db.QueryRow(
+func SaveUser(q Queryer, u *User) (err error) {
+	return q.QueryRow(
 		SaveUserQuery,
 		u.Token,
 		u.UID,
@@ -58,7 +57,7 @@ func SaveUser(db *sql.DB, u *User) (err error) {
 
 const (
 	SaveUserQuery = `INSERT INTO users(token, uid, nickname, avatar_url, name) VALUES ($1, $2, $3, $4, $5)
-                        ON CONFLICT (nickname)
+                        ON CONFLICT (nickname) DO UPDATE
                         SET token = EXCLUDED.token, name = EXCLUDED.name, avatar_url = EXCLUDED.avatar_url
                         RETURNING id`
 )

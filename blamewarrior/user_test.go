@@ -26,13 +26,30 @@ import (
 
 	"github.com/blamewarrior/users/blamewarrior"
 
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
 )
 
-
 func TestSaveUser(t *testing.T) {
+	tx, teardown := setup()
+	defer teardown()
+
+	_, err := tx.Exec("TRUNCATE users;")
+
+	require.NoError(t, err)
+
+	user := &blamewarrior.User{
+		Token:     "test token",
+		UID:       "123",
+		Nickname:  "blamewarrior_test",
+		AvatarURL: "https://avatars1.githubusercontent.com/u/788766655341678980?v=3&s=40",
+		Name:      "Blamewarrior Test",
+	}
+
+	err = blamewarrior.SaveUser(tx, user)
+
+	require.NoError(t, err)
+}
 
 func setup() (tx *sql.Tx, teardownFn func()) {
 	dbName := os.Getenv("DB_NAME")
@@ -51,7 +68,7 @@ func setup() (tx *sql.Tx, teardownFn func()) {
 	if err != nil {
 		log.Fatalf("failed to establish connection with test db %s using connection string %s: %s", dbName, opts.ConnectionString(), err)
 	}
-	tx, err := db.Begin()
+	tx, err = db.Begin()
 
 	if err != nil {
 		log.Fatal("failed to create transaction, %s", err)
