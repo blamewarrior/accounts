@@ -51,6 +51,31 @@ func TestSaveUser(t *testing.T) {
 	require.NoError(t, err)
 }
 
+func GetUserByNickname_userExists(t *testing.T) {
+	tx, teardown := setup()
+	defer teardown()
+
+	_, err := tx.Exec("TRUNCATE users;")
+
+	require.NoError(t, err)
+
+	_, err = tx.Exec(
+		blamewarrior.SaveUserQuery,
+		"test_token",
+		"uid123",
+		"test_user",
+		"https://avatars1.githubusercontent.com/u/788766655341678980?v=3&s=40",
+		"Blamewarrior Test",
+	)
+
+	require.NoError(t, err)
+
+	_, err = blamewarrior.GetUserByNickname(tx, "test_user")
+
+	require.NoError(t, err)
+
+}
+
 func setup() (tx *sql.Tx, teardownFn func()) {
 	dbName := os.Getenv("DB_NAME")
 	if dbName == "" {

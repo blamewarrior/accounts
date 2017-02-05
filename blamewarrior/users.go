@@ -20,8 +20,11 @@
 package blamewarrior
 
 import (
-// 	_ "github.com/lib/pq"
+	"database/sql"
+	"errors"
 )
+
+var UserNotFound = errors.New("User not found")
 
 type User struct {
 	ID        int    `json:"-"`
@@ -55,8 +58,28 @@ func SaveUser(q Queryer, u *User) (err error) {
 	).Scan(&u.ID)
 }
 
+func GetUserByNickname(q Queryer, nickname string) (u *User, err error) {
+	err = q.QueryRow(GetUserByNicknameQuery, nickname).Scan(
+		&u.Token,
+		&u.UID,
+		&u.Nickname,
+		&u.AvatarURL,
+		&u.Name,
+	)
+
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, UserNotFound
+		}
+		return nil, err
+	}
+
+	return u, nil
+}
+
 const (
-	SaveUserQuery = `INSERT INTO users(token, uid, nickname, avatar_url, name) VALUES ($1, $2, $3, $4, $5)
+	GetUserByNicknameQuery = "SELECT token, uid, nickname, avatar_url, name FROM users WHERE nickname = $1"
+	SaveUserQuery          = `INSERT INTO users(token, uid, nickname, avatar_url, name) VALUES ($1, $2, $3, $4, $5)
                         ON CONFLICT (nickname) DO UPDATE
                         SET token = EXCLUDED.token, name = EXCLUDED.name, avatar_url = EXCLUDED.avatar_url
                         RETURNING id`
