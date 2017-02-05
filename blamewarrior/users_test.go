@@ -51,7 +51,7 @@ func TestSaveUser(t *testing.T) {
 	require.NoError(t, err)
 }
 
-func GetUserByNickname_userExists(t *testing.T) {
+func TestGetUserByNickname_userExists(t *testing.T) {
 	tx, teardown := setup()
 	defer teardown()
 
@@ -73,6 +73,20 @@ func GetUserByNickname_userExists(t *testing.T) {
 	_, err = blamewarrior.GetUserByNickname(tx, "test_user")
 
 	require.NoError(t, err)
+
+}
+
+func TestGetUserByNickname_userDoNotExist(t *testing.T) {
+	tx, teardown := setup()
+	defer teardown()
+
+	_, err := tx.Exec("TRUNCATE users;")
+
+	require.NoError(t, err)
+
+	_, err = blamewarrior.GetUserByNickname(tx, "test_user")
+
+	require.Error(t, blamewarrior.UserNotFound)
 
 }
 

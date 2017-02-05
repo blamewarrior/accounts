@@ -58,8 +58,10 @@ func SaveUser(q Queryer, u *User) (err error) {
 	).Scan(&u.ID)
 }
 
-func GetUserByNickname(q Queryer, nickname string) (u *User, err error) {
-	err = q.QueryRow(GetUserByNicknameQuery, nickname).Scan(
+func GetUserByNickname(q Queryer, nickname string) (*User, error) {
+	u := &User{}
+
+	err := q.QueryRow(GetUserByNicknameQuery, nickname).Scan(
 		&u.Token,
 		&u.UID,
 		&u.Nickname,
