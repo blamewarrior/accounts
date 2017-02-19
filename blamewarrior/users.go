@@ -42,7 +42,6 @@ func (u User) Valid() *Validator {
 	v.MustNotBeEmpty(u.UID, "uid must not be empty")
 	v.MustNotBeEmpty(u.Nickname, "nickname must not be empty")
 	v.MustNotBeEmpty(u.AvatarURL, "avatar_url must not be empty")
-	v.MustNotBeEmpty(u.Name, "name must not be empty")
 
 	return v
 }

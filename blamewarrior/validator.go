@@ -36,5 +36,5 @@ func (v *Validator) ErrorMessages() []string {
 }
 
 func (v *Validator) IsValid() bool {
-	return len(v.messages) > 0
+	return len(v.messages) == 0
 }
