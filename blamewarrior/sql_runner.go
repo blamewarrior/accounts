@@ -16,43 +16,16 @@
    You should have received a copy of the GNU General Public License
    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
+
 package blamewarrior
 
 import (
-	"fmt"
+	"database/sql"
 )
 
-type Validator struct {
-	messages []string
-}
-
-func (v *Validator) MustNotBeEmpty(value string, msgArgs ...interface{}) bool {
-	if value != "" {
-		return true
-	}
-
-	var msg string
-
-	if len(msgArgs) == 0 || msgArgs == nil {
-		msg = fmt.Sprintf("must not be empty")
-	}
-
-	if len(msgArgs) == 1 {
-		msg = msgArgs[0].(string)
-	}
-	if len(msgArgs) > 1 {
-		msg = fmt.Sprintf(msgArgs[0].(string), msgArgs[1:]...)
-	}
-
-	v.messages = append(v.messages, msg)
-
-	return false
-}
-
-func (v *Validator) ErrorMessages() []string {
-	return v.messages
-}
-
-func (v *Validator) IsValid() bool {
-	return len(v.messages) == 0
+type SQLRunner interface {
+	Query(string, ...interface{}) (*sql.Rows, error)
+	QueryRow(string, ...interface{}) *sql.Row
+	Prepare(string) (*sql.Stmt, error)
+	Exec(string, ...interface{}) (sql.Result, error)
 }

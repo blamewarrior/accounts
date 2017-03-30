@@ -46,8 +46,8 @@ func (u User) Valid() *Validator {
 	return v
 }
 
-func SaveUser(q Queryer, u *User) (err error) {
-	return q.QueryRow(
+func SaveUser(runner SQLRunner, u *User) (err error) {
+	return runner.QueryRow(
 		SaveUserQuery,
 		u.Token,
 		u.UID,
@@ -57,10 +57,10 @@ func SaveUser(q Queryer, u *User) (err error) {
 	).Scan(&u.ID)
 }
 
-func GetUserByNickname(q Queryer, nickname string) (*User, error) {
+func GetUserByNickname(runner SQLRunner, nickname string) (*User, error) {
 	u := &User{}
 
-	err := q.QueryRow(GetUserByNicknameQuery, nickname).Scan(
+	err := runner.QueryRow(GetUserByNicknameQuery, nickname).Scan(
 		&u.Token,
 		&u.UID,
 		&u.Nickname,

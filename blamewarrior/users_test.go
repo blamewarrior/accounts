@@ -26,8 +26,9 @@ import (
 
 	"github.com/blamewarrior/users/blamewarrior"
 
-	"github.com/stretchr/testify/require"
 	"testing"
+
+	"github.com/stretchr/testify/require"
 )
 
 func TestSaveUser(t *testing.T) {
